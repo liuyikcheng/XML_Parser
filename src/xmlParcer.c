@@ -6,6 +6,7 @@
 #include "CException.h"
 #include "ErrorObject.h"
 #include <string.h>
+#include "linkedlist.h"
 
 
 Tag checkToken(int numToken){
@@ -104,6 +105,35 @@ Tag checkToken(int numToken){
 	else
 		Throw(ERR_NO_OPEN_BRACKET);
 	return lol;
+}
+
+XmlElement *createXmlElement(char *data, XmlElementType type){
+	XmlElement *xmlElement = malloc(sizeof(XmlElement));
+	xmlElement->next = NULL;
+	xmlElement->child = NULL;
+	xmlElement->data = data;
+	xmlElement->type = type;
+	return xmlElement;
+}
+
+XmlList *createXmlList(){
+	XmlList *xmlList = malloc(sizeof(XmlList));
+	xmlList->head = NULL;
+	xmlList->tail = NULL;
+	return xmlList;
+}
+
+void addList(XmlElement xmlElement, XmlList xmlList){
+	if(xmlList->head == NULL){ 
+		xmlList->head = xmlElement;
+		xmlList->tail = xmlElement;
+	}
+	
+	else{
+		xmlList->tail->next = xmlElement;
+		xmlList->tail = xmlElement;
+	}
+	xmlList->length++;
 }
 
 void printIntegerNumberError(int errorCode){
