@@ -2,7 +2,7 @@
 #define Token_H
 #include <stdint.h>
 
-// mocking
+
 typedef enum{
   TOKEN_OPERATOR_TYPE,
 	TOKEN_UNKNOWN_TYPE,
@@ -32,23 +32,23 @@ typedef struct {
 } Token;
 
 typedef struct {
-	TokenType type;
+  TokenType type;
   uint32_t startColumn;
   uint32_t length;
-	int value;
+  int value;
 } IntegerToken;
 
 typedef struct {
-	TokenType type;
+  TokenType type;
   uint32_t startColumn;
   uint32_t length;
-	double value;
+  double value;
 } FloatToken;
 
 typedef struct{
   TokenType type;
-	char *str;
-	uint32_t startColumn;
+  char *str;
+  uint32_t startColumn;
   uint32_t length;
 }StringToken, IdentifierToken;
 
@@ -56,13 +56,13 @@ typedef struct{
   TokenType type;
   uint32_t startColumn;
   uint32_t length;
-	char *symbol;
+  char *symbol;
 }OperatorToken;
 
 
 typedef struct{
-	char *parent;
-	char *child[0];
+  char *parent;
+  char *child[0];
 }Tag;
 
 Token *getToken();
