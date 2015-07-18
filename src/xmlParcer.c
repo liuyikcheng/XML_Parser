@@ -13,13 +13,16 @@
  * Function that start to received token.
  *
  */
-void checkToken(XmlList *xmlList){
-	Token *token = malloc(sizeof(Token));
-	Token *nextToken = malloc(sizeof(Token));
+XmlList *checkToken(){
+  XmlList *xmlList        = malloc(sizeof(XmlList));
+	Token *token            = malloc(sizeof(Token));
+	Token *nextToken        = malloc(sizeof(Token));
 	OperatorToken* operator = malloc(sizeof(OperatorToken));
-	StringToken* content = malloc(sizeof(StringToken));
-	IdentifierToken* tag = malloc(sizeof(IdentifierToken));
-	XmlElement *xmlElement = malloc(sizeof(XmlElement));
+	StringToken* content    = malloc(sizeof(StringToken));
+	IdentifierToken* tag    = malloc(sizeof(IdentifierToken));
+	XmlElement *xmlElement  = malloc(sizeof(XmlElement));
+  
+  xmlList = createXmlList();
   xmlElement = createXmlElement(NULL, 0); 
 	
 	token = getToken();     // check the first token whether it is "<" or not
@@ -35,10 +38,7 @@ void checkToken(XmlList *xmlList){
   
   xmlList = createXmlList();
 	checkLoop(xmlList, xmlElement, token, 0);
-	
-	printf("%d", xmlList->length);
- 
-	
+	return xmlList;
 }
 
 /* 
@@ -47,9 +47,9 @@ void checkToken(XmlList *xmlList){
  *  
  */
 ElementType openAngleBracket(XmlList *xmlList, XmlElement *xmlElement, XmlElement *newXmlElement, int endTag){
-  OperatorToken* operator = malloc(sizeof(OperatorToken));
-  IdentifierToken* tag = malloc(sizeof(IdentifierToken));
-  Token *token = malloc(sizeof(Token));
+  OperatorToken* operator  = malloc(sizeof(OperatorToken));
+  IdentifierToken* tag     = malloc(sizeof(IdentifierToken));
+  Token *token             = malloc(sizeof(Token));
   token = getToken();
   
   if (token->type == TOKEN_OPERATOR_TYPE){
@@ -62,18 +62,19 @@ ElementType openAngleBracket(XmlList *xmlList, XmlElement *xmlElement, XmlElemen
   }
   
   else if (token->type == TOKEN_IDENTIFIER_TYPE){
+    
     tag = (IdentifierToken*)token;
     printf("%s", tag->str); // print
     if (endTag == 0) {
-      xmlElement->data = tag->str;
+      xmlElement->data = tag->str;  
 			addList(xmlElement, newXmlElement, xmlList);
       return GET_TAG_OPEN;
     }
     else {
       if(strcmp(xmlElement->data, tag->str) != 0){
-			newXmlElement->data = tag->str;
-			addList(xmlElement, newXmlElement, xmlList);
-			return GET_NEW_TAG;
+        newXmlElement->data = tag->str;
+        addList(xmlElement, newXmlElement, xmlList);
+        return GET_NEW_TAG;
 			}
       else
         throwError("missing slash", ERR_NO_TAG);
@@ -92,6 +93,7 @@ ElementType xmlTag(XmlList *xmlList, int closeTag){
   Token *token = malloc(sizeof(Token));
   OperatorToken* operator = malloc(sizeof(OperatorToken));
   token = getToken();
+  
   if (token->type == TOKEN_OPERATOR_TYPE){
     operator = (OperatorToken*)token;
     printf("%s", operator->symbol); // print
@@ -146,21 +148,20 @@ ElementType slash(XmlList *xmlList, XmlElement *xmlElement, int closeTag, int se
   Token *token = malloc(sizeof(Token));
   IdentifierToken *tag = malloc(sizeof(IdentifierToken));
   OperatorToken* operator = malloc(sizeof(OperatorToken));
-  token = getToken();
   
   if ((selfClose == 1) && (closeTag == 1)){
     throwError("contain two slash", ERR_NO_CLOSING_BRACKET);
   }
-  else if ((selfClose == 1) && (token->type == TOKEN_OPERATOR_TYPE)){
-    operator = (OperatorToken*)token;
-    printf("%s", operator->symbol); // print
-    if(strcmp(operator->symbol, ">") == 0){
-      return GET_END;
-    }
-    else
-      throwError("missing bracket", ERR_NO_CLOSING_BRACKET);
+  else if (selfClose == 1){
+    return GET_END;
   }
-  else if ((closeTag == 1) && (token->type == TOKEN_IDENTIFIER_TYPE)){
+  else if (closeTag == 1) {
+    token = getToken();
+    if(token->type == TOKEN_IDENTIFIER_TYPE){
+      tag = (IdentifierToken*)token;
+    }
+    else 
+      throwError("expect a tag", ERR_NO_TAG);
     tag = (IdentifierToken*)token;
     printf("%s", tag->str); // print
     if (strcmp(xmlElement->data, tag->str) == 0)
@@ -237,20 +238,21 @@ int checkLoop(XmlList *xmlList,XmlElement *xmlElement, Token *token, int loop){
   XmlElement *newXmlElement = malloc(sizeof(XmlElement));
   newXmlElement = createXmlElement(NULL, 0);
   
-  if (loop == 0)
+  if (loop == 0){
     getType = openAngleBracket(xmlList, xmlElement, newXmlElement, 0);
+  }
   else
     getType = xmlTag(xmlList, 0);
 	
   while (end != 1){
     switch (getType){
       case GET_SLASH_CLOSE:
-        closeTag = 1;
-        getType = slash(xmlList, xmlElement, closeTag, selfClose);
+        // closeTag = 1;
+        getType = slash(xmlList, xmlElement, 1, 0);
         break;
       case GET_SLASH_SELFCLOSE:
-        selfClose = 1;
-        getType = slash(xmlList, xmlElement, closeTag, selfClose);
+        // selfClose = 1;
+        getType = slash(xmlList, xmlElement, 0, 1);
         break;
       case GET_TAG_OPEN:
         getType = xmlTag(xmlList, 0);
@@ -305,20 +307,25 @@ void addList(XmlElement *xmlElement, XmlElement *newXmlElement, XmlList *xmlList
 	}
 	
 	else{
-		xmlList->tail = xmlElement;
+		// tempElement = xmlElement;
+		tempElement = createXmlElement(xmlElement->data, xmlElement->type);
+    // printf("..%s", tempElement->data);
     
-    if(xmlElement->child == NULL)
+    if(xmlElement->child == NULL){
       xmlElement->child = newXmlElement;
-    else{
-      while(xmlList->tail->child->next != NULL){
-        xmlList->tail->child = xmlList->tail->child->next;
-      }
-      xmlList->tail->child->next = newXmlElement;
-      xmlList->tail = newXmlElement;
     }
-      
+    else{
+      // printf("..%s", xmlElement->data);
+      // printf("..%s", newXmlElement->data);
+      while(tempElement->child != NULL){
+        // printf("%s", tempElement->child->data);
+        // printf("..%s", tempElement->child->data);
+        tempElement->child = tempElement->child->next;
+      }
+    tempElement->child = newXmlElement;
     
-
+    }
+    // xmlList->tail = newXmlElement;  
 	}
 	xmlList->length++;
 }

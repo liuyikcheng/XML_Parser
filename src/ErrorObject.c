@@ -8,7 +8,6 @@ void throwError(char *message, ErrorCode errCode){
   errObj->errorCode = errCode;
   Throw(errObj);
 }
-
 // void freeError(ErrorObject *errObj){
   // free(errObj);
 // }

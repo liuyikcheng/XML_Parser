@@ -17,7 +17,7 @@ typedef enum{
 }ElementType;
 
 
-void checkToken(XmlList *xmlList);
+XmlList *checkToken();
 int checkLoop(XmlList *xmlList, XmlElement *xmlElement, Token *token, int loop);
 
 OperatorToken *createOperatorToken(char* symbol);

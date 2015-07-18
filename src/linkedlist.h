@@ -23,6 +23,6 @@ typedef struct{
 
 XmlElement *createXmlElement(char *data, XmlElementType type);
 XmlList *createXmlList();
-void addList(XmlElement xmlElement, XmlList xmlList);
+void addList(XmlElement *xmlElement, XmlElement *newXmlElement, XmlList *xmlList);
 #endif // linkedlist_H
 

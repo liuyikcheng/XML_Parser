@@ -13,12 +13,11 @@ void tearDown(void){}
 
 /**
  *
- * Display simple XML code:
- *  
- *		<name>ABC</name>
- *
+ *                                                    
+ *		<name>ABC DEF</name>        
+ *                                       
  */
-void test_moking_getToken(void){
+void xtest_moking_getToken(void){
 	ErrorObject* err;
   Tag tag;
 	XmlList *xmlList = malloc(sizeof(XmlList));
@@ -26,12 +25,12 @@ void test_moking_getToken(void){
 	xmlList = createXmlList();
 	
 	
-	Token *leftAngleBracket = (Token*)createOperatorToken("<");
-	Token *rightAngleBracket = (Token*)createOperatorToken(">");
-	Token *slash = (Token*)createOperatorToken("/");
-  Token *idName = (Token*)createIdentifierToken("name");
-  Token *contentName = (Token*)createStringToken("ABC");
-  Token *contentName1 = (Token*)createStringToken("DEF");
+	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
+	Token *rightAngleBracket  = (Token*)createOperatorToken(">");
+	Token *slash              = (Token*)createOperatorToken("/");
+  Token *idName             = (Token*)createIdentifierToken("name");
+  Token *contentName        = (Token*)createStringToken("ABC");
+  Token *contentName1       = (Token*)createStringToken("DEF");
   
 	getToken_ExpectAndReturn(leftAngleBracket);	
 	getToken_ExpectAndReturn(idName);	
@@ -43,7 +42,11 @@ void test_moking_getToken(void){
 	getToken_ExpectAndReturn(idName);	
 	getToken_ExpectAndReturn(rightAngleBracket);	
 	// Try{
-  checkToken(xmlList);
+  xmlList = checkToken();
+  TEST_ASSERT_NOT_EQUAL(xmlList->head, NULL);
+  TEST_ASSERT_NOT_EQUAL(xmlList->tail, NULL);
+  TEST_ASSERT_EQUAL(xmlList->head->data, "name");
+  TEST_ASSERT_EQUAL(xmlList->tail->data, "DEF");
 	// printf("%s", xmlList->head->data);
 	// }Catch(err){
     // printf("what%s", err->errorMsg);
@@ -60,15 +63,15 @@ void test_moking_getToken(void){
  *
  */
  
-void test_display(void){
+void xtest_display(void){
   CEXCEPTION_T err;
   Tag tag;
-	Token *leftAngleBracket = (Token*)createOperatorToken("<");
-	Token *rightAngleBracket = (Token*)createOperatorToken(">");
-	Token *slash = (Token*)createOperatorToken("/");
-  Token *idName = (Token*)createIdentifierToken("name");
-  Token *idData = (Token*)createIdentifierToken("data");
-  Token *contentName = (Token*)createStringToken("ABC");
+	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
+	Token *rightAngleBracket  = (Token*)createOperatorToken(">");
+	Token *slash              = (Token*)createOperatorToken("/");
+  Token *idName             = (Token*)createIdentifierToken("name");
+  Token *idData             = (Token*)createIdentifierToken("data");
+  Token *contentName        = (Token*)createStringToken("ABC");
   
 	XmlList *xmlList = malloc(sizeof(XmlList));
 	
@@ -102,15 +105,15 @@ void test_display(void){
  *
  */
 
-void test_display1(void){
+void xtest_display1(void){
   CEXCEPTION_T err;
   Tag tag;
-	Token *leftAngleBracket = (Token*)createOperatorToken("<");
-	Token *rightAngleBracket = (Token*)createOperatorToken(">");
-	Token *slash = (Token*)createOperatorToken("/");
-  Token *idName = (Token*)createIdentifierToken("name");
-  Token *idData = (Token*)createIdentifierToken("data");
-  Token *contentName = (Token*)createStringToken("ABC");
+	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
+	Token *rightAngleBracket  = (Token*)createOperatorToken(">");
+	Token *slash              = (Token*)createOperatorToken("/");
+  Token *idName             = (Token*)createIdentifierToken("name");
+  Token *idData             = (Token*)createIdentifierToken("data");
+  Token *contentName        = (Token*)createStringToken("ABC");
   
 	XmlList *xmlList = malloc(sizeof(XmlList));
 	
@@ -146,17 +149,17 @@ void test_display1(void){
  *
  */
 
-void test_display2(void){
+void xtest_display2(void){
   CEXCEPTION_T err;
   Tag tag;
-	Token *leftAngleBracket = (Token*)createOperatorToken("<");
-	Token *rightAngleBracket = (Token*)createOperatorToken(">");
-	Token *slash = (Token*)createOperatorToken("/");
-  Token *idName = (Token*)createIdentifierToken("name");
-  Token *idAge = (Token*)createIdentifierToken("age");
-  Token *idData = (Token*)createIdentifierToken("data");
-  Token *contentName = (Token*)createStringToken("ABC");
-  Token *contentAge = (Token*)createStringToken("18");
+	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
+	Token *rightAngleBracket  = (Token*)createOperatorToken(">");
+	Token *slash              = (Token*)createOperatorToken("/");
+  Token *idName             = (Token*)createIdentifierToken("name");
+  Token *idAge              = (Token*)createIdentifierToken("age");
+  Token *idData             = (Token*)createIdentifierToken("data");
+  Token *contentName        = (Token*)createStringToken("ABC");
+  Token *contentAge         = (Token*)createStringToken("18");
   
 	XmlList *xmlList = malloc(sizeof(XmlList));
 	
@@ -188,7 +191,7 @@ void test_display2(void){
 	Try{
   checkToken(xmlList);
 	}Catch(err){
-		printf("lol");
+		printf("error");
 	}
 }
 
@@ -197,23 +200,23 @@ void test_display2(void){
  * given:
  *  <data>
  *			<name>
- * 					<firstName>ABC</firstName>
+ * 					<first>ABC</first>
  *    	</name>
  *  </data>
  *
  *
  */
 
-void test_display3(void){
+void xtest_display3(void){
   CEXCEPTION_T err;
   Tag tag;
-	Token *leftAngleBracket = (Token*)createOperatorToken("<");
-	Token *rightAngleBracket = (Token*)createOperatorToken(">");
-	Token *slash = (Token*)createOperatorToken("/");
-  Token *idName = (Token*)createIdentifierToken("name");
-  Token *idFirstName = (Token*)createIdentifierToken("first");
-  Token *idData = (Token*)createIdentifierToken("data");
-  Token *contentName = (Token*)createStringToken("ABC");
+	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
+	Token *rightAngleBracket  = (Token*)createOperatorToken(">");
+	Token *slash              = (Token*)createOperatorToken("/");
+  Token *idName             = (Token*)createIdentifierToken("name");
+  Token *idFirstName        = (Token*)createIdentifierToken("first");
+  Token *idData             = (Token*)createIdentifierToken("data");
+  Token *contentName        = (Token*)createStringToken("ABC");
 	
 	XmlList *xmlList = malloc(sizeof(XmlList));
 	
@@ -242,14 +245,151 @@ void test_display3(void){
 	getToken_ExpectAndReturn(idData);	
 	getToken_ExpectAndReturn(rightAngleBracket);	
 	// Try{
-  checkToken(xmlList);
+  xmlList = checkToken();
   printf("%s", xmlList->head);
-  // TEST_ASSERT_NOT_EQUAL(xmlList->head, NULL);
+  printf("%s", xmlList->tail->data);
+  TEST_ASSERT_NOT_EQUAL(xmlList->head, NULL);
+  TEST_ASSERT_NOT_EQUAL(xmlList->tail, NULL);
 	// }Catch(err){
 		// printf("lol");
 	// }
 }
 
+/**
+ *
+ * given:
+ *  <data>
+ *    <class/>
+ *		<name>ABC</name>
+ *    <age>18</age>
+ *  </data>
+ *
+ *
+ */
+
+void test_display4(void){
+  CEXCEPTION_T err;
+  Tag tag;
+	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
+	Token *rightAngleBracket  = (Token*)createOperatorToken(">");
+	Token *slash              = (Token*)createOperatorToken("/");
+  Token *idName             = (Token*)createIdentifierToken("name");
+  Token *idAge              = (Token*)createIdentifierToken("age");
+  Token *idData             = (Token*)createIdentifierToken("data");
+  Token *idClass            = (Token*)createIdentifierToken("class");
+  Token *contentName        = (Token*)createStringToken("ABC");
+  Token *contentAge         = (Token*)createStringToken("18");
+  
+	XmlList *xmlList = malloc(sizeof(XmlList));
+	
+	xmlList = createXmlList();
+	
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(idData);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+  getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(idClass);	
+  getToken_ExpectAndReturn(slash);
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(idName);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	getToken_ExpectAndReturn(contentName);	
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(slash);	
+	getToken_ExpectAndReturn(idName);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+  getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(idAge);	
+  getToken_ExpectAndReturn(rightAngleBracket);
+  getToken_ExpectAndReturn(contentAge);
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(slash);	
+	getToken_ExpectAndReturn(idAge);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(slash);	
+	getToken_ExpectAndReturn(idData);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	// Try{
+  xmlList = checkToken();
+	// }Catch(err){
+		// printf("error");
+	// }
+}
+
+/**
+ *
+ * given:
+ *  <data>
+ *    <class/>
+ *		<name>
+ *			<first>ABC</first>
+ *		</name>
+ *    <age>18</age>
+ *  </data>
+ *
+ *
+ */
+
+void test_display5(void){
+  CEXCEPTION_T err;
+  Tag tag;
+	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
+	Token *rightAngleBracket  = (Token*)createOperatorToken(">");
+	Token *slash              = (Token*)createOperatorToken("/");
+  Token *idName             = (Token*)createIdentifierToken("name");
+  Token *idFirst             = (Token*)createIdentifierToken("first");
+  Token *idAge              = (Token*)createIdentifierToken("age");
+  Token *idData             = (Token*)createIdentifierToken("data");
+  Token *idClass            = (Token*)createIdentifierToken("class");
+  Token *contentName        = (Token*)createStringToken("ABC");
+  Token *contentAge         = (Token*)createStringToken("18");
+  
+	XmlList *xmlList = malloc(sizeof(XmlList));
+	
+	xmlList = createXmlList();
+	
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(idData);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+  getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(idClass);	
+  getToken_ExpectAndReturn(slash);
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(idName);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(idFirst);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	getToken_ExpectAndReturn(contentName);	
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(slash);	
+	getToken_ExpectAndReturn(idFirst);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(slash);	
+	getToken_ExpectAndReturn(idName);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+  getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(idAge);	
+  getToken_ExpectAndReturn(rightAngleBracket);
+  getToken_ExpectAndReturn(contentAge);
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(slash);	
+	getToken_ExpectAndReturn(idAge);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(slash);	
+	getToken_ExpectAndReturn(idData);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	// Try{
+  xmlList = checkToken();
+	// }Catch(err){
+		// printf("error");
+	// }
+}
 /**
  *
  * given:
