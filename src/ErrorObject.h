@@ -4,7 +4,10 @@
 typedef enum {
   ERR_NO_OPEN_BRACKET,
   ERR_NO_CLOSING_BRACKET,
+  ERR_NO_SLASH,
+  ERR_WRONG_TAG,
   ERR_NO_TAG,
+  ERR_TOKEN_TYPE
 } ErrorCode;
 
 typedef struct{

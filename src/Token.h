@@ -10,7 +10,6 @@ typedef enum{
 	TOKEN_FLOAT_TYPE,
 	TOKEN_STRING_TYPE,
 	TOKEN_IDENTIFIER_TYPE,
-
 }TokenType;
 
 typedef enum {
