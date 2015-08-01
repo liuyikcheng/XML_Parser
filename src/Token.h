@@ -56,8 +56,10 @@ typedef struct{
   uint32_t startColumn;
   uint32_t length;
   char *symbol;
+  char *str;
+  Arity arity;
+  Token *token[0];
 }OperatorToken;
-
 
 typedef struct{
   char *parent;

@@ -156,7 +156,7 @@ ElementType xmlTag(XmlList *xmlList, XmlElement *xmlElement, int closeTag){
   Token *token = malloc(sizeof(Token));
   OperatorToken *operator = malloc(sizeof(OperatorToken));
   IdentifierToken *tag    = malloc(sizeof(IdentifierToken));
-  XmlElement *attrElement; 
+  XmlAttribute *attributeElement; 
   
   do{
   token = getToken();
@@ -179,12 +179,9 @@ ElementType xmlTag(XmlList *xmlList, XmlElement *xmlElement, int closeTag){
       throwError("Expecting a '>'", ERR_NO_CLOSING_BRACKET);
   }
   else if (token->type == TOKEN_IDENTIFIER_TYPE){
-    tag = (IdentifierToken*)token;
-    printf(" %s", tag->str); //print
-    attrElement = malloc(sizeof(XmlElement));
-    attrElement = createXmlElement(tag->str, XML_ATTRIBUTE);
-    // addListAttribute();
-    xmlAttribute(xmlList, xmlElement);
+    attributeElement = malloc(sizeof(XmlAttribute));
+    attributeElement = xmlAttribute(token);
+    addListAttribute(xmlElement, attributeElement, xmlList);
   }
   else
     throwError("Expecting a '>'", ERR_NO_CLOSING_BRACKET);
@@ -285,12 +282,17 @@ ElementType xmlContent(XmlList *xmlList, XmlElement *xmlElement){
   }
   else
     throwError("Recevied wrong token", ERR_NO_CLOSING_BRACKET);
-}
+}                        
 
-void xmlAttribute(XmlList *xmlList, XmlElement *xmlElement){
+XmlAttribute *xmlAttribute(Token *attr){
   Token *token = malloc(sizeof(Token));
+  IdentifierToken *id = malloc(sizeof(IdentifierToken));
   StringToken *content = malloc(sizeof(StringToken));
   OperatorToken *operator = malloc(sizeof(OperatorToken));
+  XmlAttribute *attribute = malloc(sizeof(XmlAttribute));
+  
+  id = (IdentifierToken*)attr;
+  printf(" %s", id->str);
   
   token = getToken();
   
@@ -313,6 +315,11 @@ void xmlAttribute(XmlList *xmlList, XmlElement *xmlElement){
   else
     throwError("Missing a '='", ERR_NO_CLOSING_BRACKET);
   
+  token = add2Tokens(id->str, operator->symbol, content->str);
+  
+  attribute = createXmlAttribute(token);
+  
+  return attribute;
 }
 
 /*
@@ -337,8 +344,3 @@ void checkLastToken(){
   else 
     throwError("Expecting a '>'", ERR_NO_CLOSING_BRACKET);
 }
-
-
-
-
-

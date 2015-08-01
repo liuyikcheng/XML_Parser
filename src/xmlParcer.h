@@ -33,7 +33,7 @@ ElementType slash(XmlList *xmlList, XmlElement *xmlElement, TagType tagType);
 ElementType closeAngleBracket(XmlList *xmlList, XmlElement *xmlElement);
 ElementType xmlTag(XmlList *xmlList, XmlElement *xmlElement, int closeTag);
 ElementType openAngleBracket(XmlList *xmlList, XmlElement *xmlElement, XmlElement *newXmlElement, int endTag);
-void xmlAttribute(XmlList *xmlList, XmlElement *xmlElement);
+XmlAttribute *xmlAttribute(Token *token);
 void checkLastToken();
 
 #endif // xmlParcer_H

@@ -19,7 +19,7 @@ void tearDown(void){}
  *		<name>ABC DEF</name>        
  *                                       
  */
-void test_moking_getToken(void){
+void xtest_moking_getToken(void){
 	ErrorObject* err;
   Tag tag;
 	XmlList *xmlList = malloc(sizeof(XmlList));
@@ -153,7 +153,7 @@ void xtest_display1(void){
  *
  */
 
-void xtest_display2(void){
+void test_display2(void){
   CEXCEPTION_T err;
   Tag tag;
 	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
@@ -281,7 +281,7 @@ void test_display3(void){
 
 void test_display4(void){
   CEXCEPTION_T err;
-  Tag tag;
+  
 	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
 	Token *rightAngleBracket  = (Token*)createOperatorToken(">");
 	Token *slash              = (Token*)createOperatorToken("/");
@@ -294,7 +294,7 @@ void test_display4(void){
   
 	XmlList *xmlList = malloc(sizeof(XmlList));
 	
-	xmlList = createXmlList();
+	// xmlList = createXmlList();
 	
 	getToken_ExpectAndReturn(leftAngleBracket);	
 	getToken_ExpectAndReturn(idData);	
@@ -333,7 +333,7 @@ void test_display4(void){
     xmlList->head = xmlList->head->next;
     printf("\n %s1", xmlList->head->data);
   }
-  // printf("%s", xmlList->tail->data);
+  printf("%s", xmlList->tail->data);
 	// }Catch(err){
 		// printf("error");
 	// }
@@ -353,7 +353,7 @@ void test_display4(void){
  *
  */
 
-void test_display5(void){
+void xtest_display5(void){
   CEXCEPTION_T err;
   Tag tag;
 	Token *leftAngleBracket   = (Token*)createOperatorToken("<");

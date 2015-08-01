@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <Token.h>
+#include <TokenCreate.h>
 #include "linkedlist.h"
 
 
@@ -18,6 +20,13 @@ XmlList *createXmlList(){
 	xmlList->tail = NULL;
 	xmlList->length = 0;
 	return xmlList;
+}
+
+XmlAttribute *createXmlAttribute(Token *token){
+  XmlAttribute *attribute = malloc(sizeof(XmlAttribute));
+  attribute->next = NULL;
+  attribute->token = token;
+  return attribute;
 }
 
 void addList(XmlElement *xmlElement, XmlElement *newXmlElement, XmlList *xmlList){
@@ -44,6 +53,41 @@ void addList(XmlElement *xmlElement, XmlElement *newXmlElement, XmlList *xmlList
 	xmlList->length++;
 }
 
-void addListAttribute(XmlElement *xmlElement, XmlElement xmlAttribute, XmlList *xmlList){
+void addListAttribute(XmlElement *xmlElement, XmlAttribute *attributeElement, XmlList *xmlList){
+  XmlAttribute *tempElement = malloc(sizeof(XmlElement));
   
+  if(xmlList->head == NULL){ 
+		xmlList->head = xmlElement;
+		xmlList->tail = xmlElement;
+	}
+  
+  else{
+      if(xmlElement->attribute == NULL){
+          xmlElement->attribute = attributeElement;
+      }
+      else{
+      tempElement = xmlElement->attribute;
+      if(tempElement->next != NULL){
+        tempElement = tempElement->next;
+      }
+      tempElement->next = attributeElement;
+    }
+  
+	}
+	xmlList->length++;
+}
+
+Token *add2Tokens(char *leftValue, char *operatorSymbol, char *rightValue){
+  OperatorToken *op = malloc(sizeof(OperatorToken)+(sizeof(Token)*2));
+  IdentifierToken *lefttoken = malloc(sizeof(IdentifierToken));
+  StringToken *righttoken = malloc(sizeof(StringToken));
+  
+  lefttoken = createIdentifierToken(leftValue);
+  righttoken = createStringToken(rightValue);
+  op = createOperatorToken(operatorSymbol);
+  
+  op->token[0] = (Token*)lefttoken;
+  op->token[1] = (Token*)righttoken;
+  
+  return (Token*)op;
 }
