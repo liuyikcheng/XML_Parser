@@ -10,6 +10,20 @@ OperatorToken *createOperatorToken(char* symbol){
   return op;
 }
 
+IntegerToken *createIntegerToken(int value){
+  IntegerToken *number = malloc(sizeof(IntegerToken));
+  number->value = value;
+  number->type = TOKEN_INTEGER_TYPE;
+  return number;
+}
+
+FloatToken *createFloatToken(float value){
+  FloatToken *number = malloc(sizeof(FloatToken));
+  number->value = value;
+  number->type = TOKEN_FLOAT_TYPE;
+  return number;
+}
+
 StringToken *createStringToken(char* str){
   StringToken* st = malloc(sizeof(StringToken));
   st->str = str;

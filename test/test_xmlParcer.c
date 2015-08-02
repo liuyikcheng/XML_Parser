@@ -19,7 +19,7 @@ void tearDown(void){}
  *		<name>ABC DEF</name>        
  *                                       
  */
-void xtest_moking_getToken(void){
+void test_moking_getToken(void){
 	ErrorObject* err;
   Tag tag;
 	XmlList *xmlList = malloc(sizeof(XmlList));
@@ -43,18 +43,11 @@ void xtest_moking_getToken(void){
 	getToken_ExpectAndReturn(slash);	
 	getToken_ExpectAndReturn(idName);	
 	getToken_ExpectAndReturn(rightAngleBracket);	
-	// Try{
+
   xmlList = checkToken();
-  // TEST_ASSERT_NOT_EQUAL(xmlList->head, NULL);
-  // TEST_ASSERT_NOT_EQUAL(xmlList->tail, NULL);
-  // TEST_ASSERT_EQUAL(xmlList->head->data, "name");
-  // TEST_ASSERT_EQUAL(xmlList->tail->data, "DEF");
-	// printf("%s", xmlList->head->data);
-	// printf("%s", xmlList->head->child->data);
-	// printf("%s", xmlList->head->child->next->data);
-	// }Catch(err){
-    // printf("what%s", err->errorMsg);
-  // }
+  TEST_ASSERT_NOT_EQUAL(xmlList->head, NULL);
+  TEST_ASSERT_NOT_EQUAL(xmlList->tail, NULL);
+
 }
 
 /**
@@ -67,7 +60,7 @@ void xtest_moking_getToken(void){
  *
  */
  
-void xtest_display(void){
+void test_display(void){
   CEXCEPTION_T err;
   Tag tag;
 	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
@@ -294,7 +287,7 @@ void test_display4(void){
   
 	XmlList *xmlList = malloc(sizeof(XmlList));
 	
-	// xmlList = createXmlList();
+	xmlList = createXmlList();
 	
 	getToken_ExpectAndReturn(leftAngleBracket);	
 	getToken_ExpectAndReturn(idData);	
@@ -323,7 +316,7 @@ void test_display4(void){
 	getToken_ExpectAndReturn(slash);	
 	getToken_ExpectAndReturn(idData);	
 	getToken_ExpectAndReturn(rightAngleBracket);	
-	// Try{
+
   xmlList = checkToken();
   printf("\n %s", xmlList->head->data);
   xmlList->head = xmlList->head->child;
@@ -353,7 +346,7 @@ void test_display4(void){
  *
  */
 
-void xtest_display5(void){
+void test_display5(void){
   CEXCEPTION_T err;
   Tag tag;
 	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
@@ -365,7 +358,7 @@ void xtest_display5(void){
   Token *idData             = (Token*)createIdentifierToken("data");
   Token *idClass            = (Token*)createIdentifierToken("class");
   Token *contentName        = (Token*)createStringToken("ABC");
-  Token *contentAge         = (Token*)createStringToken("18");
+  Token *contentAge         = (Token*)createIntegerToken(18);
   
 	XmlList *xmlList = malloc(sizeof(XmlList));
 	
@@ -405,11 +398,11 @@ void xtest_display5(void){
 	getToken_ExpectAndReturn(slash);	
 	getToken_ExpectAndReturn(idData);	
 	getToken_ExpectAndReturn(rightAngleBracket);	
-	// Try{
+	Try{
   xmlList = checkToken();
-	// }Catch(err){
-		// printf("error");
-	// }
+	}Catch(err){
+		printf("\n Error: %s",err->errorMsg);
+	}
 }
 
 /**
@@ -507,13 +500,50 @@ void test_display6(void){
     xmlList->head = xmlList->head->child;
     printf("\n %s1", xmlList->head->data);
   }while(xmlList->head->child != NULL);
-  // printf("\n %s", xmlList->tail->data);
-  // printf("%d", xmlList->length);
-	// }Catch(err){
-		// printf("error");
-	// }
 }
 
+/**
+ *
+ *                                                    
+ *		<name gender = "male"> ABC </name>        
+ *                                       
+ */
+void test_obtaining_attribute(void){
+  CEXCEPTION_T err;
+  Tag tag;
+	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
+	Token *rightAngleBracket  = (Token*)createOperatorToken(">");
+	Token *slash              = (Token*)createOperatorToken("/");
+	Token *equal              = (Token*)createOperatorToken("=");
+  Token *idName             = (Token*)createIdentifierToken("name");
+  Token *idGender           = (Token*)createIdentifierToken("gender");
+  Token *contentName        = (Token*)createStringToken("ABC");
+  Token *contentGrade       = (Token*)createStringToken("\"A\"");
+  Token *contentGender      = (Token*)createStringToken("\"male\"");
+  
+	XmlList *xmlList = malloc(sizeof(XmlList));
+	
+	xmlList = createXmlList();
+
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(idName);	
+	getToken_ExpectAndReturn(idGender);
+	getToken_ExpectAndReturn(equal);
+	getToken_ExpectAndReturn(contentGender);
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	getToken_ExpectAndReturn(contentName);		
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(slash);	
+	getToken_ExpectAndReturn(idName);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+ 
+  xmlList = checkToken();
+
+  TEST_ASSERT_EQUAL(TOKEN_OPERATOR_TYPE, xmlList->head->attribute->token->type);
+  TEST_ASSERT_EQUAL("=", ((OperatorToken*)(xmlList->head->attribute)->token)->symbol);
+  TEST_ASSERT_EQUAL(TOKEN_IDENTIFIER_TYPE, ((OperatorToken*)(xmlList->head->attribute)->token)->token[0]->type);
+  // TEST_ASSERT_EQUAL(TOKEN_STRING_TYPE, ((OperatorToken*)(xmlList->head->attribute)->token)->token[1]->type);
+}
 
 /**
  *
@@ -521,7 +551,7 @@ void test_display6(void){
  *		<name ABC DEF</name>        
  *                                       
  */
-void ztest_error_missing_bracket(void){
+void test_error_missing_bracket(void){
 	ErrorObject* err;
   Tag tag;
 	XmlList *xmlList = malloc(sizeof(XmlList));
@@ -538,7 +568,6 @@ void ztest_error_missing_bracket(void){
   
 	getToken_ExpectAndReturn(leftAngleBracket);	
 	getToken_ExpectAndReturn(idName);	
-	// getToken_ExpectAndReturn(rightAngleBracket);	
 	getToken_ExpectAndReturn(contentName);	
 	getToken_ExpectAndReturn(contentName1);	
 	getToken_ExpectAndReturn(leftAngleBracket);	
@@ -547,43 +576,81 @@ void ztest_error_missing_bracket(void){
 	getToken_ExpectAndReturn(rightAngleBracket);	
 	Try{
   xmlList = checkToken();
-  TEST_ASSERT_NOT_EQUAL(xmlList->head, NULL);
-  TEST_ASSERT_NOT_EQUAL(xmlList->tail, NULL);
-  TEST_ASSERT_EQUAL(xmlList->head->data, "name");
-  TEST_ASSERT_EQUAL(xmlList->tail->data, "DEF");
-	// printf("%s", xmlList->head->data);
 	}Catch(err){
-    TEST_FAIL_MESSAGE(err->errorMsg);
+    printf("%s",err->errorMsg);
   }
 }
+
 /**
  *
- * given:
- *		<name>ABC</name
- * 
- * should throw error
- *
+ *                                                    
+ *		name> ABC DEF</name>        
+ *                                       
  */
-// void test_error_should_return_ERR_NO_CLOSING_TAG1(void){
-  // CEXCEPTION_T err;
-  // Tag tag;
-	// Token *leftAngleBracket = (Token*)createOperatorToken("<");
-	// Token *rightAngleBracket = (Token*)createOperatorToken(">");
-	// Token *slash = (Token*)createOperatorToken("/");
-  // Token *idName = (Token*)createIdentifierToken("name");
-  // Token *contentName = (Token*)createStringToken("ABC");
+void test_error_missing_bracket_at_start(void){
+	ErrorObject* err;
+  Tag tag;
+	XmlList *xmlList = malloc(sizeof(XmlList));
+	
+	xmlList = createXmlList();
+	
+	
+	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
+	Token *rightAngleBracket  = (Token*)createOperatorToken(">");
+	Token *slash              = (Token*)createOperatorToken("/");
+  Token *idName             = (Token*)createIdentifierToken("name");
+  Token *contentName        = (Token*)createStringToken("ABC");
+  Token *contentName1       = (Token*)createStringToken("DEF");
   
-	// getToken_ExpectAndReturn(leftAngleBracket);	
-	// getToken_ExpectAndReturn(idName);	
-	// getToken_ExpectAndReturn(rightAngleBracket);	
-	// getToken_ExpectAndReturn(contentName);	
-	// getToken_ExpectAndReturn(leftAngleBracket);	
-	// getToken_ExpectAndReturn(slash);	
-	// getToken_ExpectAndReturn(idName);	
-	// getToken_ExpectAndReturn(rightAngleBracket);	
-	// Try{
-  // tag = checkToken(7);
-	// }Catch(err){
-    // printf("\n Something is wrong \n");
-  // }
-// }
+	getToken_ExpectAndReturn(idName);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	getToken_ExpectAndReturn(contentName);	
+	getToken_ExpectAndReturn(contentName1);	
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(slash);	
+	getToken_ExpectAndReturn(idName);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	Try{
+  xmlList = checkToken();
+	}Catch(err){
+    printf("%s",err->errorMsg);
+  }
+}
+
+/**
+ *
+ *                                                    
+ *		<name ABC DEF</age>        
+ *                                       
+ */
+void test_error_wrong_tag(void){
+	ErrorObject* err;
+  Tag tag;
+	XmlList *xmlList = malloc(sizeof(XmlList));
+	
+	xmlList = createXmlList();
+	
+	
+	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
+	Token *rightAngleBracket  = (Token*)createOperatorToken(">");
+	Token *slash              = (Token*)createOperatorToken("/");
+  Token *idName             = (Token*)createIdentifierToken("name");
+  Token *idAge              = (Token*)createIdentifierToken("age");
+  Token *contentName        = (Token*)createStringToken("ABC");
+  Token *contentName1       = (Token*)createStringToken("DEF");
+  
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(idName);	
+  getToken_ExpectAndReturn(rightAngleBracket);	
+	getToken_ExpectAndReturn(contentName);	
+	getToken_ExpectAndReturn(contentName1);	
+	getToken_ExpectAndReturn(leftAngleBracket);	
+	getToken_ExpectAndReturn(slash);	
+	getToken_ExpectAndReturn(idAge);	
+	getToken_ExpectAndReturn(rightAngleBracket);	
+	Try{
+  xmlList = checkToken();
+	}Catch(err){
+    printf("%s",err->errorMsg);
+  }
+}
