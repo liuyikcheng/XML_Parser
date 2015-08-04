@@ -34,4 +34,6 @@ ElementType openAngleBracket(XmlList *xmlList, XmlElement *xmlElement, XmlElemen
 XmlAttribute *xmlAttribute(Token *token);
 void checkLastToken();
 
+void throwTokenError();
+
 #endif // xmlParcer_H

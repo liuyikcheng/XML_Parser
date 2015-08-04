@@ -21,10 +21,17 @@ XmlList *checkToken(){
   xmlElement = createXmlElement(NULL, XML_TAG); 
 	
 	token = getToken();     // check the first token whether it is "<" or not
-	// if(token->type == TOKEN_OPERATOR_TYPE){
-	if((token->type == TOKEN_OPERATOR_TYPE)&&(strcmp(((OperatorToken*)token)->symbol, "<") == 0)){
+
+	if ((token->type == TOKEN_OPERATOR_TYPE)&&(strcmp(((OperatorToken*)token)->symbol, "<") == 0)){
+		//printf("%s", ((OperatorToken*)token)->symbol);//print
 		xmlElement = checkLoop(xmlList, xmlElement, 0);
-		//printf("%s", operator->symbol);//print
+    token = getToken();
+    
+    if ((token->type == TOKEN_OPERATOR_TYPE)&&(strcmp(((OperatorToken*)token)->symbol, "$") == 0)){
+      return xmlList;
+    }
+    else
+      throwError("\nExcess tokens!!", ERR_NO_OPEN_BRACKET);
 	}
 	else
 		throwError("\nExpecting '<' at start.",ERR_NO_OPEN_BRACKET);
@@ -102,11 +109,12 @@ ElementType openAngleBracket(XmlList *xmlList, XmlElement *xmlElement, XmlElemen
   token = getToken();
   
   if ((token->type == TOKEN_OPERATOR_TYPE)&&(strcmp(((OperatorToken*)token)->symbol, "/") == 0)){
+    // //printf("%s", ((OperatorToken*)token)->symbol); // print
     return GOT_SLASH_CLOSE;
   }
   
   else if (token->type == TOKEN_IDENTIFIER_TYPE){
-    //printf("%s", tag->str); // print
+    // //printf("%s", ((IdentifierToken*)token)->str); // print
     
     if (endTag == 0) {
       xmlElement->data = ((IdentifierToken*)token)->str;
@@ -140,10 +148,10 @@ ElementType xmlTag(XmlList *xmlList, XmlElement *xmlElement, int closeTag){
   
   if ((token->type == TOKEN_OPERATOR_TYPE) && (strcmp(((OperatorToken*)token)->symbol, "/") == 0)){
     return GOT_SLASH_SELFCLOSE;
-    //printf("%s", operator->symbol); // print
+    // //printf("%s", ((OperatorToken*)token)->symbol); // print
   }
   else if ((token->type == TOKEN_OPERATOR_TYPE) && (strcmp(((OperatorToken*)token)->symbol, ">") == 0)){
-      
+      // //printf("%s", ((OperatorToken*)token)->symbol); // print
       if(closeTag == 1)
         return GOT_END;
       else
@@ -194,7 +202,8 @@ ElementType closeAngleBracket(XmlList *xmlList, XmlElement *xmlElement){
       
     }
     else if ((token->type == TOKEN_OPERATOR_TYPE) && (strcmp(((OperatorToken*)token)->symbol, "<") == 0)){
-        return GOT_OPENANGLEBRACKET;
+      // //printf("%s", ((OperatorToken*)token)->symbol); // print
+      return GOT_OPENANGLEBRACKET;
     }
     else 
       throwError("Expecting contents after '>' symbol. ", ERR_TOKEN_TYPE);
@@ -234,7 +243,7 @@ XmlAttribute *xmlAttribute(Token *attr){
   XmlAttribute *attribute = malloc(sizeof(XmlAttribute));
   
   id = (IdentifierToken*)attr;
-  //printf(" %s", id->str);
+  ////printf(" %s", id->str);
   
   token = getToken();
   
@@ -248,7 +257,7 @@ XmlAttribute *xmlAttribute(Token *attr){
   
   if (token->type == TOKEN_STRING_TYPE){
     content = (StringToken*)token;
-    //printf("%s", content->str);
+    ////printf("%s", content->str);
   }
   else
     throwError("Missing a '='", ERR_NO_CLOSING_BRACKET);
@@ -267,30 +276,25 @@ XmlAttribute *xmlAttribute(Token *attr){
  */
 void checkLastToken(){
   Token *token = malloc(sizeof(Token));
-  OperatorToken* operator = malloc(sizeof(OperatorToken));
   token = getToken();
-  
-  if (token->type == TOKEN_OPERATOR_TYPE){
-    operator = (OperatorToken*)token;
-    //printf("%s", operator->symbol); // print
-    if (strcmp(operator->symbol, ">") == 0){
-      // token = getToken();
-    }
-    else 
-      throwError("Expecting a '>'", ERR_NO_CLOSING_BRACKET);
+  if ((token->type == TOKEN_OPERATOR_TYPE)&&(strcmp(((OperatorToken*)token)->symbol, ">") == 0)){
   }
   else 
     throwError("Expecting a '>'", ERR_NO_CLOSING_BRACKET);
-  
-  // if (token->type == TOKEN_OPERATOR_TYPE){
-    // operator = (OperatorToken*)token;
-    // if (strcmp(operator->symbol, "$") == 0){
+}
 
-    // }
-    // else 
-      // throwError("Expecting a '>'", ERR_NO_CLOSING_BRACKET);
-  // }
-  // else 
-    // throwError("Expecting a '>'", ERR_NO_CLOSING_BRACKET);
+void throwTokenError(){
+  
+  do{
+    Token *token = malloc(sizeof(Token));
+    token = getToken();
+    
+    if (token->type == TOKEN_OPERATOR_TYPE){
+      if(strcmp(((OperatorToken*)token)->symbol, "$") == 0){
+        return;
+      }
+    }
+  free(token);
+  }while(1);
   
 }
