@@ -15,38 +15,31 @@
 XmlList *checkToken(){
   XmlList *xmlList        = malloc(sizeof(XmlList));
 	Token *token            = malloc(sizeof(Token));
-	OperatorToken* operator = malloc(sizeof(OperatorToken));
 	XmlElement *xmlElement  = malloc(sizeof(XmlElement));
   
   xmlList = createXmlList();
-  xmlElement = createXmlElement(NULL, 0); 
+  xmlElement = createXmlElement(NULL, XML_TAG); 
 	
 	token = getToken();     // check the first token whether it is "<" or not
-	if(token->type == TOKEN_OPERATOR_TYPE){
-		operator = (OperatorToken*)token;
+	// if(token->type == TOKEN_OPERATOR_TYPE){
+	if((token->type == TOKEN_OPERATOR_TYPE)&&(strcmp(((OperatorToken*)token)->symbol, "<") == 0)){
+		xmlElement = checkLoop(xmlList, xmlElement, 0);
 		//printf("%s", operator->symbol);//print
-		if(strcmp(operator->symbol, "<") == -1){ // Check whether the first token is "<"  
-			Throw(ERR_NO_OPEN_BRACKET);
-		}
 	}
 	else
 		throwError("\nExpecting '<' at start.",ERR_NO_OPEN_BRACKET);
-  
-  xmlList = createXmlList();
-	xmlElement = checkLoop(xmlList, xmlElement, token, 0);
+ 
 	return xmlList;
 }
 
-XmlElement *checkLoop(XmlList *xmlList, XmlElement *xmlElement, Token *token, int loop){
+XmlElement *checkLoop(XmlList *xmlList, XmlElement *xmlElement, int loop){
   ElementType getType;
   TagType tagType;
   bool end = 0;
 
   XmlElement *childElement;
-  XmlElement *newXmlElement;
-  
-  newXmlElement = malloc(sizeof(XmlElement));
-  newXmlElement = createXmlElement(NULL,0);
+  XmlElement *newXmlElement = malloc(sizeof(XmlElement));
+  newXmlElement = createXmlElement(NULL,XML_TAG);
   
   if (loop == 0){
     getType = openAngleBracket(xmlList, xmlElement, newXmlElement, 0);
@@ -81,7 +74,7 @@ XmlElement *checkLoop(XmlList *xmlList, XmlElement *xmlElement, Token *token, in
       case GOT_NEW_TAG:
         childElement = malloc(sizeof(XmlElement));
         childElement = createXmlElement(newXmlElement->data,newXmlElement->type);
-        childElement = checkLoop(xmlList, childElement, token, 1);
+        childElement = checkLoop(xmlList, childElement, 1);
         addList(xmlElement, childElement, xmlList);
         getType = GOT_CLOSEANGLEBRACKET;
         break;
@@ -103,36 +96,25 @@ XmlElement *checkLoop(XmlList *xmlList, XmlElement *xmlElement, Token *token, in
  *  
  */
 ElementType openAngleBracket(XmlList *xmlList, XmlElement *xmlElement, XmlElement *newXmlElement, int endTag){
-  OperatorToken* operator  = malloc(sizeof(OperatorToken));
-  IdentifierToken* tag     = malloc(sizeof(IdentifierToken));
   Token *token             = malloc(sizeof(Token));
   XmlElement *childElement;
+ 
   token = getToken();
   
-  if (token->type == TOKEN_OPERATOR_TYPE){
-    operator = (OperatorToken*)token;
-    //printf("%s", operator->symbol); // print
-    
-    if (strcmp(operator->symbol, "/") == 0)
-      return GOT_SLASH_CLOSE;
-    else
-      throwError("\nExpecting a '/' symbol.", ERR_NO_SLASH);
+  if ((token->type == TOKEN_OPERATOR_TYPE)&&(strcmp(((OperatorToken*)token)->symbol, "/") == 0)){
+    return GOT_SLASH_CLOSE;
   }
   
   else if (token->type == TOKEN_IDENTIFIER_TYPE){
-    tag = (IdentifierToken*)token;
     //printf("%s", tag->str); // print
     
     if (endTag == 0) {
-      xmlElement->data = tag->str;
+      xmlElement->data = ((IdentifierToken*)token)->str;
       return GOT_TAG_OPEN;
     }
     else {
-      
-      if(strcmp(xmlElement->data, tag->str) != 0){
-				childElement = malloc(sizeof(XmlElement));
-        childElement = createXmlElement(tag->str,XML_TAG);
-        newXmlElement->data = childElement->data;
+      if(strcmp(xmlElement->data, ((IdentifierToken*)token)->str) != 0){
+        newXmlElement->data = ((IdentifierToken*)token)->str;
         return GOT_NEW_TAG;
 			}
       else
@@ -151,29 +133,21 @@ ElementType openAngleBracket(XmlList *xmlList, XmlElement *xmlElement, XmlElemen
  */
 ElementType xmlTag(XmlList *xmlList, XmlElement *xmlElement, int closeTag){
   Token *token = malloc(sizeof(Token));
-  OperatorToken *operator = malloc(sizeof(OperatorToken));
-  IdentifierToken *tag    = malloc(sizeof(IdentifierToken));
   XmlAttribute *attributeElement; 
   
   do{
   token = getToken();
   
-  if (token->type == TOKEN_OPERATOR_TYPE){
-    operator = (OperatorToken*)token;
+  if ((token->type == TOKEN_OPERATOR_TYPE) && (strcmp(((OperatorToken*)token)->symbol, "/") == 0)){
+    return GOT_SLASH_SELFCLOSE;
     //printf("%s", operator->symbol); // print
-    
-    if (strcmp(operator->symbol, "/") == 0){
-      return GOT_SLASH_SELFCLOSE;
-    }
-    else if (strcmp(operator->symbol, ">") == 0){
+  }
+  else if ((token->type == TOKEN_OPERATOR_TYPE) && (strcmp(((OperatorToken*)token)->symbol, ">") == 0)){
       
       if(closeTag == 1)
         return GOT_END;
       else
         return GOT_CLOSEANGLEBRACKET;
-    }
-    else 
-      throwError("\nExpecting a '>' or '/' after the tag.", ERR_NO_CLOSING_BRACKET);
   }
   else if (token->type == TOKEN_IDENTIFIER_TYPE){
     attributeElement = malloc(sizeof(XmlAttribute));
@@ -192,43 +166,35 @@ ElementType xmlTag(XmlList *xmlList, XmlElement *xmlElement, int closeTag){
  */
 ElementType closeAngleBracket(XmlList *xmlList, XmlElement *xmlElement){
   char num[] = " ";// = " ";
-  char content[] = " ";// = " "; 
+  char *content;// = " "; 
   Token *token = malloc(sizeof(Token));
-  StringToken *string = malloc(sizeof(StringToken));
   OperatorToken* operator = malloc(sizeof(OperatorToken));
-  FloatToken *floatNumber = malloc(sizeof(FloatToken));
-  IntegerToken *number = malloc(sizeof(IntegerToken));
-	XmlElement *contentElement = malloc(sizeof(XmlElement));
+	XmlElement *contentElement;
   
   
 	do{
     token = getToken();
     if (token->type == TOKEN_STRING_TYPE){
-      string = (StringToken*)token;
-      strcat(content, string->str);
+      contentElement = malloc(sizeof(XmlElement));
+      contentElement = createXmlElement(((StringToken*)token)->str, XML_CONTENT);
+      addList(xmlElement, contentElement, xmlList);
     }
     else if (token->type == TOKEN_INTEGER_TYPE){
-      number = (IntegerToken*)token;
-      sprintf(num, "%d", number->value);
-      strcat(content, num);
+      sprintf(num, "%d", ((IntegerToken*)token)->value);
+      contentElement = malloc(sizeof(XmlElement));
+      contentElement = createXmlElement(num, XML_CONTENT);
+      addList(xmlElement, contentElement, xmlList);
+      
     }
     else if(token->type == TOKEN_FLOAT_TYPE){
-      floatNumber = (FloatToken*)token;
-      sprintf(num, "%f", floatNumber);
-      strcat(content, num);
-    }
-    else if (token->type == TOKEN_OPERATOR_TYPE){
-      if(strcmp(content, " ") == 1){
-        //printf("%s", content);//print
-        contentElement = createXmlElement(content, XML_CONTENT);
-        addList(xmlElement, contentElement, xmlList);
-      }
-      operator = (OperatorToken*)token;
-      //printf("%s", operator->symbol); // print
+      sprintf(num, "%f", ((FloatToken*)token)->value);
+      contentElement = malloc(sizeof(XmlElement));
+      contentElement = createXmlElement(num, XML_CONTENT);
+      addList(xmlElement, contentElement, xmlList);
       
-      if (strcmp(operator->symbol, "<") == 0){
+    }
+    else if ((token->type == TOKEN_OPERATOR_TYPE) && (strcmp(((OperatorToken*)token)->symbol, "<") == 0)){
         return GOT_OPENANGLEBRACKET;
-      }
     }
     else 
       throwError("Expecting contents after '>' symbol. ", ERR_TOKEN_TYPE);
@@ -243,8 +209,6 @@ ElementType closeAngleBracket(XmlList *xmlList, XmlElement *xmlElement){
  */
 ElementType slash(XmlList *xmlList, XmlElement *xmlElement, TagType tagType){
   Token *token = malloc(sizeof(Token));
-  IdentifierToken *tag = malloc(sizeof(IdentifierToken));
-  OperatorToken* operator = malloc(sizeof(OperatorToken));
   
   if (tagType == SELF_CLOSE_TAG){
     return GOT_END;
@@ -252,23 +216,14 @@ ElementType slash(XmlList *xmlList, XmlElement *xmlElement, TagType tagType){
   else if (tagType == CLOSE_TAG) {
     token = getToken();
     
-    if(token->type == TOKEN_IDENTIFIER_TYPE){
-      tag = (IdentifierToken*)token;
+    if ((token->type == TOKEN_IDENTIFIER_TYPE) || (strcmp(xmlElement->data, ((IdentifierToken*)token)->str) == 0)){
+       return GOT_END;
     }
-    else 
-      throwError("Expect Identifier token.", ERR_TOKEN_TYPE);
-    
-    tag = (IdentifierToken*)token;
-    //printf("%s", tag->str); // print
-    
-    if (strcmp(xmlElement->data, tag->str) == 0)
-      return GOT_END;
     else
       throwError("\nClosing tag are not same with open tag", ERR_WRONG_TAG);
   }
   
 }
-
 
 
 XmlAttribute *xmlAttribute(Token *attr){
@@ -283,12 +238,8 @@ XmlAttribute *xmlAttribute(Token *attr){
   
   token = getToken();
   
-  if (token->type == TOKEN_OPERATOR_TYPE){
+  if ((token->type == TOKEN_OPERATOR_TYPE) && (strcmp(((OperatorToken*)token)->symbol, "=") == 0)){
     operator = (OperatorToken*)token;
-    if (strcmp(operator->symbol, "=") == 0){}
-      //printf("%s", operator->symbol); //print
-    else
-      throwError("Missing a '='", ERR_NO_CLOSING_BRACKET);
   }
   else
     throwError("Missing a '='", ERR_NO_CLOSING_BRACKET);
@@ -323,11 +274,23 @@ void checkLastToken(){
     operator = (OperatorToken*)token;
     //printf("%s", operator->symbol); // print
     if (strcmp(operator->symbol, ">") == 0){
-      
+      // token = getToken();
     }
     else 
       throwError("Expecting a '>'", ERR_NO_CLOSING_BRACKET);
   }
   else 
     throwError("Expecting a '>'", ERR_NO_CLOSING_BRACKET);
+  
+  // if (token->type == TOKEN_OPERATOR_TYPE){
+    // operator = (OperatorToken*)token;
+    // if (strcmp(operator->symbol, "$") == 0){
+
+    // }
+    // else 
+      // throwError("Expecting a '>'", ERR_NO_CLOSING_BRACKET);
+  // }
+  // else 
+    // throwError("Expecting a '>'", ERR_NO_CLOSING_BRACKET);
+  
 }

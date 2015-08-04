@@ -23,9 +23,7 @@ typedef enum{
 }TagType;
 
 XmlList *checkToken();
-XmlElement *checkLoop(XmlList *xmlList, XmlElement *xmlElement, Token *token, int loop);
-
-
+XmlElement *checkLoop(XmlList *xmlList, XmlElement *xmlElement, int loop);
 
 
 ElementType xmlContent(XmlList *xmlList, XmlElement *xmlElement);

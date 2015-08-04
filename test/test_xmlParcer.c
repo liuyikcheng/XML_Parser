@@ -102,7 +102,7 @@ void test_display(void){
  *
  */
 
-void xtest_display1(void){
+void test_display1(void){
   CEXCEPTION_T err;
   Tag tag;
 	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
@@ -245,6 +245,7 @@ void test_display3(void){
   xmlList = checkToken();
     
   printf("\n %s", xmlList->head->data);
+  printf("\n %d", xmlList->head->type);
   do{
     xmlList->head = xmlList->head->child;
     printf("\n %s1", xmlList->head->data);
@@ -346,7 +347,7 @@ void test_display4(void){
  *
  */
 
-void test_display5(void){
+void xtest_display5(void){
   CEXCEPTION_T err;
   Tag tag;
 	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
@@ -420,7 +421,7 @@ void test_display5(void){
  *
  */
 
-void test_display6(void){
+void xtest_display6(void){
   CEXCEPTION_T err;
   Tag tag;
 	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
@@ -496,6 +497,7 @@ void test_display6(void){
 	// Try{
   xmlList = checkToken();
   printf("\n %s", xmlList->head->data);
+  printf("\n %s", xmlList->head->type);
   do{
     xmlList->head = xmlList->head->child;
     printf("\n %s1", xmlList->head->data);
@@ -508,7 +510,7 @@ void test_display6(void){
  *		<name gender = "male"> ABC </name>        
  *                                       
  */
-void test_obtaining_attribute(void){
+void xtest_obtaining_attribute(void){
   CEXCEPTION_T err;
   Tag tag;
 	Token *leftAngleBracket   = (Token*)createOperatorToken("<");
@@ -551,7 +553,7 @@ void test_obtaining_attribute(void){
  *		<name ABC DEF</name>        
  *                                       
  */
-void test_error_missing_bracket(void){
+void xtest_error_missing_bracket(void){
 	ErrorObject* err;
   Tag tag;
 	XmlList *xmlList = malloc(sizeof(XmlList));
@@ -587,7 +589,7 @@ void test_error_missing_bracket(void){
  *		name> ABC DEF</name>        
  *                                       
  */
-void test_error_missing_bracket_at_start(void){
+void xtest_error_missing_bracket_at_start(void){
 	ErrorObject* err;
   Tag tag;
 	XmlList *xmlList = malloc(sizeof(XmlList));
@@ -623,7 +625,7 @@ void test_error_missing_bracket_at_start(void){
  *		<name ABC DEF</age>        
  *                                       
  */
-void test_error_wrong_tag(void){
+void xtest_error_wrong_tag(void){
 	ErrorObject* err;
   Tag tag;
 	XmlList *xmlList = malloc(sizeof(XmlList));
