@@ -53,12 +53,12 @@ typedef struct{
 
 typedef struct{
   TokenType type;
+  Token *token[0];
   uint32_t startColumn;
   uint32_t length;
   char *symbol;
   char *str;
   Arity arity;
-  Token *token[0];
 }OperatorToken;
 
 typedef struct{

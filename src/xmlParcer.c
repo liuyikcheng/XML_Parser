@@ -28,6 +28,7 @@ XmlList *checkToken(){
     token = getToken();
     
     if ((token->type == TOKEN_OPERATOR_TYPE)&&(strcmp(((OperatorToken*)token)->symbol, "$") == 0)){
+      // free(token);
       return xmlList;
     }
     else
@@ -108,8 +109,7 @@ ElementType openAngleBracket(XmlList *xmlList, XmlElement *xmlElement, XmlElemen
  
   token = getToken();
   
-  if ((token->type == TOKEN_OPERATOR_TYPE)&&(strcmp(((OperatorToken*)token)->symbol, "/") == 0)){
-    // //printf("%s", ((OperatorToken*)token)->symbol); // print
+  if ((token->type == TOKEN_OPERATOR_TYPE)&&(strcmp(((OperatorToken*)token)->symbol, "/") == 0)&&(endTag != 0)){
     return GOT_SLASH_CLOSE;
   }
   
@@ -118,15 +118,17 @@ ElementType openAngleBracket(XmlList *xmlList, XmlElement *xmlElement, XmlElemen
     
     if (endTag == 0) {
       xmlElement->data = ((IdentifierToken*)token)->str;
+      // free(token);
       return GOT_TAG_OPEN;
     }
     else {
       if(strcmp(xmlElement->data, ((IdentifierToken*)token)->str) != 0){
         newXmlElement->data = ((IdentifierToken*)token)->str;
+        // free(token);
         return GOT_NEW_TAG;
 			}
       else
-        throwError("Wrong tag name.", ERR_NO_TAG);
+        throwError("\nMissing '/' or wrong tag name.", ERR_NO_TAG);
     }
   }
   else 
@@ -176,7 +178,6 @@ ElementType closeAngleBracket(XmlList *xmlList, XmlElement *xmlElement){
   char num[] = " ";// = " ";
   char *content;// = " "; 
   Token *token = malloc(sizeof(Token));
-  OperatorToken* operator = malloc(sizeof(OperatorToken));
 	XmlElement *contentElement;
   
   
@@ -224,7 +225,6 @@ ElementType slash(XmlList *xmlList, XmlElement *xmlElement, TagType tagType){
   }
   else if (tagType == CLOSE_TAG) {
     token = getToken();
-    
     if ((token->type == TOKEN_IDENTIFIER_TYPE) || (strcmp(xmlElement->data, ((IdentifierToken*)token)->str) == 0)){
        return GOT_END;
     }
@@ -264,6 +264,7 @@ XmlAttribute *xmlAttribute(Token *attr){
   
   token = add2Tokens(id->str, operator->symbol, content->str);
   
+  // printf("%s", (((OperatorToken*)token)->token[1]->type));
   attribute = createXmlAttribute(token);
   
   return attribute;
@@ -276,7 +277,9 @@ XmlAttribute *xmlAttribute(Token *attr){
  */
 void checkLastToken(){
   Token *token = malloc(sizeof(Token));
+  
   token = getToken();
+  
   if ((token->type == TOKEN_OPERATOR_TYPE)&&(strcmp(((OperatorToken*)token)->symbol, ">") == 0)){
   }
   else 
@@ -291,6 +294,7 @@ void throwTokenError(){
     
     if (token->type == TOKEN_OPERATOR_TYPE){
       if(strcmp(((OperatorToken*)token)->symbol, "$") == 0){
+        free(token);
         return;
       }
     }
