@@ -18,13 +18,16 @@ typedef enum{
   RECEIVED_CONTENT,
   RECEIVED_ATTRIBUTE,
   RECEIVED_EQUAL_SIGN,
+  RECEIVED_ATTRIBUTE_EQUAL_SIGN
 
 }ElementType;
 
 typedef enum{
+  ATTRIBUTE_TAG,
   OPEN_TAG,
   CLOSE_TAG,
   SELF_CLOSE_TAG,
+  ATTRIBUTE_EQUAL_SIGN
 }TagType;
 
 XmlList *checkToken();

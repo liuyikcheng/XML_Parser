@@ -27,15 +27,22 @@ typedef struct{
 
 struct XmlAttribute{
   XmlAttribute *next;
-  Token *token;
+  char* attributeTag;
+  char* attributeContent;
+  XmlElementType type;
 };
 
 XmlElement *createXmlElement(char *data, XmlElementType type);
 XmlList *createXmlList();
-XmlAttribute *createXmlAttribute(Token *token);
+XmlAttribute *createXmlAttribute(char *attributeTag, XmlElementType type);
 
 void addList(XmlElement *xmlElement, XmlElement *newXmlElement, XmlList *xmlList);
 void addListAttribute(XmlElement *xmlElement, XmlAttribute *xmlAttribute, XmlList *xmlList);
+void addListAttributeContent(XmlElement *xmlElement, char *attributeContent);
+
+XmlElement *strListFind(XmlList *list, void *data, int (*compare)(void *, void*));
+int strCompare(void *first, void *second);
+
 
 Token *add2Tokens(char *leftValue, char *operatorSymbol, char *rightValue);
 
