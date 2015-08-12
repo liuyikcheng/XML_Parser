@@ -3,6 +3,10 @@
 #include <stdint.h>
 
 
+/*
+ * @brief   Token mocking file.
+ */
+
 typedef enum{
   TOKEN_OPERATOR_TYPE,
 	TOKEN_UNKNOWN_TYPE,

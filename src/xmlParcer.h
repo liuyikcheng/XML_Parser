@@ -1,15 +1,30 @@
 #ifndef xmlParcer_H
 #define xmlParcer_H
+#include <stdbool.h>
 #include "Token.h"
 #include "linkedlist.h"
-#include <stdbool.h>
+
+
+
+/*
+ * The list of content in different types of token
+ */
+#define TokenOpSymbol   ((OperatorToken*)token)->symbol
+#define TokenIdStr      ((IdentifierToken*)token)->str
+#define TokenStrStr     ((StringToken*)token)->str
+#define TokenIntVal     ((IntegerToken*)token)->value
+#define TokenFloatVal   ((FloatToken*)token)->value
+
+
+/*
+ * The state of the token receive process
+ */
 typedef enum{
   WAIT_FOR_TOKEN,
   RECEIVED_START_OPENANGLEBRACKET,
   RECEIVED_OPENANGLEBRACKET,
   RECEIVED_CLOSEANGLEBRACKET,
   RECEIVED_END_CLOSEANGLEBRACKET,
-  RECEIVED_END,
   RECEIVED_TAG_OPEN,
   RECEIVED_TAG_CLOSE,
   RECEIVED_NEW_TAG,
@@ -22,16 +37,19 @@ typedef enum{
 
 }ElementType;
 
+/*
+ * The type of the tag
+ */
 typedef enum{
-  ATTRIBUTE_TAG,
   OPEN_TAG,
   CLOSE_TAG,
   SELF_CLOSE_TAG,
+  ATTRIBUTE_TAG,
   ATTRIBUTE_EQUAL_SIGN
 }TagType;
 
 XmlList *checkToken();
-XmlElement *checkLoop(XmlList *xmlList, XmlElement *xmlElement, int loop);
+XmlElement *checkLoop(XmlList *xmlList, XmlElement *xmlElement, bool loop);
 
 ElementType startToken(Token *token);
 ElementType xmlContent(XmlList *xmlList, XmlElement *xmlElement, Token *token);
@@ -39,9 +57,8 @@ ElementType slash(XmlList *xmlList, XmlElement *xmlElement, TagType tagType, Tok
 ElementType closeAngleBracket(XmlList *xmlList, XmlElement *xmlElement, TagType tagType, Token *token);
 ElementType equalSign(XmlList *xmlList, XmlElement *xmlElement, Token *token);
 ElementType xmlTag(XmlList *xmlList, XmlElement *xmlElement, TagType tagType, Token *token);
-ElementType openAngleBracket(XmlList *xmlList, XmlElement *xmlElement, XmlElement *newXmlElement, TagType tagType, Token *token);
-XmlAttribute *xmlAttribute(Token *token);
-void checkLastToken();
+ElementType openAngleBracket(XmlList *xmlList, XmlElement *xmlElement, XmlElement *newXmlElement,\
+                             TagType tagType, Token *token);
 
 void throwTokenError();
 

@@ -22,7 +22,7 @@ struct XmlElement{
 typedef struct{
 	struct XmlElement *head;
 	struct XmlElement *tail ;
-	int length;
+	int length; //number of element in the list
 }XmlList;
 
 struct XmlAttribute{

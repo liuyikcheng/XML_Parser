@@ -3,6 +3,11 @@
 #include "Token.h"
 #include "xmlParcer.h"
 
+/**
+ * @brief     This file provide functions to create tokens for the retrieval
+ *            of mocking the getToken function.
+ */
+
 OperatorToken *createOperatorToken(char* symbol){
   OperatorToken* op = malloc(sizeof(OperatorToken));
   op->symbol = symbol;
@@ -17,7 +22,7 @@ IntegerToken *createIntegerToken(int value){
   return number;
 }
 
-FloatToken *createFloatToken(float value){
+FloatToken *createFloatToken(double value){
   FloatToken *number = malloc(sizeof(FloatToken));
   number->value = value;
   number->type = TOKEN_FLOAT_TYPE;
