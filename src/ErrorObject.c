@@ -17,21 +17,21 @@ void throwError(char *message, ErrorCode errCode, Token *token){
   
   
   if (token->type == TOKEN_OPERATOR_TYPE)
-    sprintf(msg, "%s but received '%s'.", message, TokenOpSymbol);
+    sprintf(msg, "%s'%s'.", message, TokenOpSymbol);
   else if (token->type == TOKEN_INTEGER_TYPE){
     sprintf(num, "%d", TokenIntVal);
-    sprintf(msg, "%s but received '%s'.", message, num);
+    sprintf(msg, "%s'%s'.", message, num);
   }
   else if (token->type == TOKEN_FLOAT_TYPE){
     sprintf(num, "%.2f", TokenFloatVal);
-    sprintf(msg, "%s but received '%s'.", message, num);
+    sprintf(msg, "%s'%s'.", message, num);
   }
   else if (token->type == TOKEN_STRING_TYPE)
-    sprintf(msg, "%s but received '%s'.", message, TokenStrStr);
+    sprintf(msg, "%s'%s'.", message, TokenStrStr);
   else if (token->type == TOKEN_IDENTIFIER_TYPE)
-    sprintf(msg, "%s but received '%s'.", message, TokenIdStr);
+    sprintf(msg, "%s'%s'.", message, TokenIdStr);
   else
-    sprintf(msg, "%s but received unknown object.", message);
+    sprintf(msg, "%sunknown object.", message);
   
   errObj->errorMsg = msg;
   errObj->errorCode = errCode;

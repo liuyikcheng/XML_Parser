@@ -114,7 +114,7 @@ XmlElement *checkLoop(XmlList *xmlList, XmlElement *xmlElement, bool loop){
     if ((token->type == TOKEN_OPERATOR_TYPE)&&(strcmp(TokenOpSymbol, "$") == 0)){
     }
     else
-      throwError("\nExpecting '$' symbol at end", ERR_NO_OPEN_BRACKET, token);
+      throwError("\nExpecting '$' symbol at end but received ", ERR_NO_OPEN_BRACKET, token);
   }
   
   return xmlElement;
@@ -130,7 +130,7 @@ ElementType startToken(Token *token){
   if ((token->type == TOKEN_OPERATOR_TYPE)&&(strcmp(TokenOpSymbol, "<") == 0))
     return RECEIVED_START_OPENANGLEBRACKET;
   else
-    throwError("\nExpecting '<' symbol at beginning", ERR_NO_OPEN_BRACKET, token);
+    throwError("\nExpecting '<' symbol at beginning but received ", ERR_NO_OPEN_BRACKET, token);
 }
 
 
@@ -158,7 +158,7 @@ ElementType openAngleBracket(XmlList *xmlList, XmlElement *xmlElement, XmlElemen
     }
     else {
       if (xmlElement->data == NULL){
-        throwError("\nExpecting an open tag", ERR_NO_TAG, token);
+        throwError("\nExpecting an open tag but received ", ERR_NO_TAG, token);
       }
       //recusion if receive a new tag
       else if (strcmp(xmlElement->data, TokenIdStr) != 0){
@@ -168,11 +168,11 @@ ElementType openAngleBracket(XmlList *xmlList, XmlElement *xmlElement, XmlElemen
         return RECEIVED_CLOSEANGLEBRACKET;
 			}
       else
-        throwError("\nMissing '/' or wrong tag name", ERR_NO_TAG, token);
+        throwError("\nMissing '/' or wrong tag name but received ", ERR_NO_TAG, token);
     }
   }
   else 
-    throwError("Expecting a tag or '/' after the '<' symbol", ERR_WRONG_TAG, token);
+    throwError("Expecting a tag or '/' after the '<' symbol but received ", ERR_WRONG_TAG, token);
 }
 
 /*
@@ -193,7 +193,7 @@ ElementType xmlTag(XmlList *xmlList, XmlElement *xmlElement, TagType tagType, To
       return RECEIVED_ATTRIBUTE_EQUAL_SIGN;
     }
     else
-      throwError("\nExpecting a '=' symbol after attribute tag", ERR_NO_CLOSING_BRACKET, token);
+      throwError("\nExpecting a '=' symbol after attribute tag but received ", ERR_NO_CLOSING_BRACKET, token);
   }
   else if (tagType == ATTRIBUTE_EQUAL_SIGN){
     if (token->type == TOKEN_STRING_TYPE){
@@ -201,7 +201,7 @@ ElementType xmlTag(XmlList *xmlList, XmlElement *xmlElement, TagType tagType, To
       return RECEIVED_TAG_OPEN;
     }
     else
-      throwError("\nExpecting content after attribute tag", ERR_NO_CLOSING_BRACKET, token);
+      throwError("\nExpecting content after attribute tag but received ", ERR_NO_CLOSING_BRACKET, token);
   }
   else if (tagType == OPEN_TAG){
     if ((token->type == TOKEN_OPERATOR_TYPE) && (strcmp(TokenOpSymbol, "/") == 0)){
@@ -216,17 +216,17 @@ ElementType xmlTag(XmlList *xmlList, XmlElement *xmlElement, TagType tagType, To
       return RECEIVED_ATTRIBUTE;
     }
     else 
-      throwError("\nExpecting a '/' or '>' after the tag", ERR_NO_CLOSING_BRACKET, token);
+      throwError("\nExpecting a '/' or '>' after the tag but received ", ERR_NO_CLOSING_BRACKET, token);
   }
   else if (tagType == CLOSE_TAG){
     if ((token->type == TOKEN_OPERATOR_TYPE) && (strcmp(TokenOpSymbol, ">") == 0)){
       return ;
     }
     else
-      throwError(("\nExpecting a '>' after the close tag"), ERR_NO_CLOSING_BRACKET, token);
+      throwError(("\nExpecting a '>' after the close tag but received "), ERR_NO_CLOSING_BRACKET, token);
   }
   else
-    throwError("\nExpecting a '>' or '/' after the tag", ERR_NO_CLOSING_BRACKET, token);
+    throwError("\nExpecting a '>' or '/' after the tag but received ", ERR_NO_CLOSING_BRACKET, token);
 }
  
 /*
@@ -264,7 +264,7 @@ ElementType closeAngleBracket(XmlList *xmlList, XmlElement *xmlElement, TagType 
       return RECEIVED_OPENANGLEBRACKET;
     }
     else {
-      throwError("\nExpecting contents after '>' symbol", ERR_TOKEN_TYPE, token);
+      throwError("\nExpecting contents after '>' symbol but received ", ERR_TOKEN_TYPE, token);
     }
   }
   else{
@@ -292,10 +292,10 @@ ElementType slash(XmlList *xmlList, XmlElement *xmlElement, TagType tagType, Tok
       return RECEIVED_TAG_CLOSE;
     }
     else
-      throwError("\nClosing tag are not same with open tag", ERR_WRONG_TAG, token);
+      throwError("\nClosing tag are not same with open tag but received ", ERR_WRONG_TAG, token);
   }
   else  
-    throwError("\nExpecting '>' after '/' symbol", ERR_WRONG_TAG, token);
+    throwError("\nExpecting '>' after '/' symbol but received ", ERR_WRONG_TAG, token);
   
 }
 

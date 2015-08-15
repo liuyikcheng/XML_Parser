@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <Token.h>
-#include <TokenCreate.h>
+#include "Token.h"
+#include "TokenCreate.h"
 #include "linkedlist.h"
 #include "ErrorObject.h"
 
@@ -142,8 +142,9 @@ XmlElement *strListFind(XmlList *xmlList, void *data, int (*compare)(void *, voi
       break;
   }while (xmlList->head != NULL);
   
-  if (result == 1)
+  if (result == 1){
     throwError("Error element not found!!!", ERR_NO_ELEMENT, token);
+  }
   else 
     return xmlList->head;
   
